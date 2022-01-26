@@ -1,0 +1,102 @@
+<html>
+    <head>
+        <style>
+    * 
+    { padding: 0; margin: 0; } canvas { background: salmon; display: block; margin: 0 auto; }
+      </style>
+    
+   
+    </head>
+    <body>
+        <input id="btn" type="button" value="start" />
+    <p>
+    <canvas id="root" width="500" height="500" ></canvas>
+    <script>
+        function moveLeft(bears){
+            for(let i=0;i<3;i++){
+
+            }
+        }
+    function drawFooter(){
+        var ctx = canvas.getContext("2d");
+        // var rectangle = new Path2D();
+        // var circle = new Path2D();
+        ctx.beginPath();
+        ctx.moveTo(0,400);
+        ctx.lineTo(50,400);
+        ctx.lineTo(50,410);
+        ctx.lineTo(0,410);
+        ctx.fillStyle='black';
+        ctx.fillRect(50,395,40,20);
+        ctx.moveTo(90,400);
+        ctx.lineTo(410,400);
+        ctx.lineTo(410,410);
+        ctx.lineTo(90,410);
+        ctx.fillRect(410,395,40,20);
+        ctx.moveTo(500,400);
+        ctx.lineTo(450,400);
+        ctx.moveTo(500,410);
+        ctx.lineTo(450,410);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(70, 450, 10, 0, Math.PI*2);
+        ctx.arc(430, 450, 10, 0, Math.PI*2);
+        ctx.fill();
+        ctx.closePath();
+    }
+      const canvas = document.getElementById('root'),
+      btn = document.getElementById('btn'),
+      ctx = canvas.getContext('2d'),
+      brickImage = new Image(1,1);
+      drawFooter();
+      // var rectangle = new Path2D();
+        // var circle = new Path2D();
+      brickImage.src = "ball.png";//"https://i.stack.imgur.com/YreH6.png";
+
+      var piece = {
+         image: brickImage,
+          x: 64,
+          y: 10,
+          //width: 70
+        };
+     bears=[];
+     for(let i=0;i<3;i++){
+         bears[i]=piece;
+     }
+     btn.addEventListener('click', start); // When btn is clicked execute start()
+
+     function start()
+     {
+        if(btn.value === 'start')
+        {
+        btn.value = 'animation started';  
+        brickImage.onload = window.requestAnimationFrame(gameLoop); // Start gameLoop()
+        }
+    }
+
+   function gameLoop(){ 
+    ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
+    drawFooter();
+    ctx.drawImage(bears[0].image, bears[0].x, bears[0].y);     // Draw at coordinates x and y
+    ctx.drawImage(bears[1].image, bears[1].x, bears[0].y-30);     
+    ctx.drawImage(bears[2].image, bears[2].x, bears[0].y-60);     
+    //pieceRightSide = piece.x + piece.width;
+    //piece.y += 1
+    if(bears[0].y != 350 && bears[1].y!=340 && bears[2].y!=330 ){ // Brick stops when it gets to the right border 
+      bears[0].y += 1;
+      bears[1].y += 1;
+      bears[2].y += 1;
+    //   moveLeft(bears);
+    //   moveRight();
+    }
+    else{
+        bears[0].x -= 1;
+      bears[1].x -= 1;
+      bears[2].x -= 1;
+    }
+  window.requestAnimationFrame(gameLoop);   // Needed to keep looping
+}
+
+</script>
+</body>
+</html>
