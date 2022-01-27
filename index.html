@@ -1,161 +1,305 @@
 <html>
     <head>
-        <style>
+       <style>
     * { padding: 0; margin: 0; } 
     canvas { background: salmon; display: block; margin: 0 auto; }
       </style>
   </head>
   <body>
-    <input id="btn" type="button" value="start" />
+    <input id="btn" type="button" value="start"/>
     <p>
     <canvas id="root" width="500" height="500" ></canvas>
+
+
     <script>
         
-      const canvas = document.getElementById('root'),
-      btn = document.getElementById('btn'),
-      ctx = canvas.getContext('2d'),
-      brickImage = new Image(1,1);
-      var endy=350;
-      var reachDeskY=0;
-      drawFooter();
-      // var rectangle = new Path2D();
-        // var circle = new Path2D();
-      brickImage.src = "ball.png";
-
-      var piece = {
-         image: brickImage,
-          lx: 64,
-          ly: 10,
-          rx: 416,
-          ry: 10,
-          //width: 70
-        };
-     bears=[];
-     for(let i=0;i<10;i++){
-         bears[i]=piece;
-     }
-     btn.addEventListener('click', start); // When btn is clicked execute start()
-
-     function start()
-     {
-        if(btn.value === 'start')
-        {
-        btn.value = 'animation started';  
-        brickImage.onload = window.requestAnimationFrame(gameLoop); // Start gameLoop()
-        }
-    }
-
-    function drawFooter(){
-        var ctx = canvas.getContext("2d");
+        const canvas = document.getElementById('root'),
+        btn = document.getElementById('btn'),
+        ctx = canvas.getContext('2d'),
+        brickImage = new Image(1,1);
+        var endy=350;
+        var reachDeskY=0;
+        var startPlay=0;
+        var mainBearPos=0;
+        var shiftExitCount=0;
+        
+        drawFooter();
         // var rectangle = new Path2D();
-        // var circle = new Path2D();
-        ctx.beginPath();
-        ctx.moveTo(0,400);
-        ctx.lineTo(50,400);
-        ctx.lineTo(50,410);
-        ctx.lineTo(0,410);
-        ctx.fillStyle='black';
-        ctx.fillRect(50,395,40,20);
-        ctx.moveTo(90,400);
-        ctx.lineTo(410,400);
-        ctx.lineTo(410,410);
-        ctx.lineTo(90,410);
-        ctx.fillRect(410,395,40,20);
-        ctx.moveTo(500,400);
-        ctx.lineTo(450,400);
-        ctx.moveTo(500,410);
-        ctx.lineTo(450,410);
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.arc(70, 450, 10, 0, Math.PI*2);
-        ctx.arc(430, 450, 10, 0, Math.PI*2);
-        ctx.fill();
-        ctx.closePath();
-    }
-
-    function drawImageBears(bears){
-      var dy=0;
-      for(let i=0;i<5;i++){
-        ctx.drawImage(bears[i].image, bears[i].lx, bears[i].ly-dy);
-        dy=dy+28;
-      }
-      dy=0;
-      for(let i=5;i<10;i++){
-        ctx.drawImage(bears[i].image, bears[i].rx, bears[i].ry-dy);
-        dy=dy+28;
-      }
-    }
-
-    function checkEndLefty(bears){
-      var countOf=0;
-      var step=0;
-      for(let i=0;i<5;i++){
-        if(bears[i].ly != endy-step)
-          { countOf=countOf+1; 
-           step=step+10;
-          }
-      }
-      if(countOf==5) return 1;
-      else return 0;
-    }
-    function checkEndRighty(bears){
-      var countOf=0;
-      var step=0;
-      for(let i=5;i<10;i++){
-        if(bears[i].ry != endy-step)
-          { countOf=countOf+1; 
-           step=step+10;
-          }
-      }
-      if(countOf==5) return 1;
-      else return 0;
-    }
-
-    function moveDown(bears){
-      for(let i=0;i<5;i++)     bears[i].ly += 1;
-      for(let i=5;i<10;i++)    bears[i].ry += 1;
-
-
-    }
-    function moveLeft(bears){
-      for(let i=0;i<5;i++)
-         {bears[i].lx -= 0.5; bears[i+5].rx+=0.5;}
-        
-    }
-    // function moveRight(bears){
-    //   for(let i=5;i<10;i++)
-    //      bears[i].rx += 0.5;
-    // }
-
-    function stopInterval(bears){
-      reachDeskY+=1;
+          // var circle = new Path2D();
+        brickImage.src = "ball.png";
+        var countOf=0;
+  
+        var piece = {
+            image: brickImage,
+            lx: 64,
+            ly: 10,
+            rx: 416,
+            ry: 10,
+            //width: 70
+          };
+          var redBear = {
+            image: brickImage,
+            x:350, y:10,
+          };
       
+       var train=new Image();
+       train.onload=function(){
+        ctx.drawImage(train,250,50);
     }
+      train.src="ball.png";
+    var x=250;
+    var y=50;
+       mainBear=redBear;
+       bears=[];
+        bearsShift2=[]
+       for(let i=0;i<10;i++){
+           bears[i]=piece;
+       }
+       for(let i=0;i<4;i++){
+           bearsShift2[i]=piece;
+       }
 
-   function gameLoop(){ 
-    ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
-    drawFooter();
-    drawImageBears(bears);
-    // Draw at coordinates x and y
-         
-    //pieceRightSide = piece.x + piece.width;
-    //piece.y += 1
-    if(checkEndLefty(bears)==1 && checkEndRighty(bears)==1 ){ // Brick stops when it gets to the right border 
-      moveDown(bears);
-     
-    
-    }
-    else{
-      if(reachDeskY<100)
-          stopInterval(bears);
-      else if(reachDeskY==100)
-            moveLeft(bears);
-            //moveRight(bears);
+       
+       for(let i=0;i<4;i++)
+         bearsShift2[i]=piece;
+       btn.addEventListener('click', start); // When btn is clicked execute start()
+       document.getElementById("myCanvas").addEventListener("click");
+  
+       function start()
+       {
+          if(btn.value === 'start')
+          {
+          btn.value = 'animation started';  
+          brickImage.onload = window.requestAnimationFrame(gameLoop); // Start gameLoop()
+          }
+      }
+      function movePic(x,y)
+      {
+        ctx.drawImage(train,x,y);
+      }
+      function drawMainBear(){
+          var positions=[
+              [150,10],[150,10],[150,20],[150,30],[150,10],[150,10],[150,10],[150,20],[150,30],[150,10]
+          ];
+          ctx.drawImage(redBear.image,positions[ 1][0], positions[ 1][1]);
+          mainBearPos+=1;
+  
+      }
+  
+      function drawFooter(){
+          var ctx = canvas.getContext("2d");
+          ctx.beginPath();
+          ctx.moveTo(0,400);
+          ctx.lineTo(50,400);
+          ctx.lineTo(50,410);
+          ctx.lineTo(0,410);
+          ctx.fillStyle='black';
+          ctx.fillRect(50,395,40,20);
+          ctx.moveTo(90,400);
+          ctx.lineTo(410,400);
+          ctx.lineTo(410,410);
+          ctx.lineTo(90,410);
+          ctx.fillRect(410,395,40,20);
+          ctx.moveTo(500,400);
+          ctx.lineTo(450,400);
+          ctx.moveTo(500,410);
+          ctx.lineTo(450,410);
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.arc(70, 450, 10, 0, Math.PI*2);
+          ctx.arc(430, 450, 10, 0, Math.PI*2);
+          ctx.fill();
+          ctx.closePath();
+      }
+  
+      function drawImageBears(temp){
+          if(temp==1){
+        var dy=0;
+        for(let i=0;i<5;i++){
+          ctx.drawImage(bears[i].image, bears[i].lx, bears[i].ly-dy);
+          dy=dy+38;
+        }
+        dy=0;
+        for(let i=5;i<10;i++){
+          ctx.drawImage(bears[i].image, bears[i].rx, bears[i].ry-dy);
+          dy=dy+38;
+        }
+      }
+      else{
+          dy=0;
+          for(let i=0;i<4;i++)
+         { 
+             ctx.drawImage(bears[i].image, bears[i].lx, bears[i].ly-dy);
+             ctx.drawImage(bears[i+2].image, bears[i+5].rx, bears[i+2].ry-dy);
+             dy=dy+38;
+         }
+  
+      }
+  
+      }
+  
+      function checkEndLefty(bears){
+      //   var countOf=0;
+      //   var step=0;
+      //   for(let i=0;i<5;i++){
+      //     if(bears[i].ly != endy-step)
+      //       { countOf=countOf+1; 
+      //        step=step+10;
+      //       }
+      //   }
+      //   if(countOf==5) return 1;
+      //   else return 0;
+      if(bears[0].ly==350) return 1;
+      else return 0;
+      }
+      function checkEndRighty(bears){
+      //   var countOf=0;
+      //   var step=0;
+      //   for(let i=5;i<10;i++){
+      //     if(bears[i].ry != endy-step)
+      //       { countOf=countOf+1; 
+      //        step=step+10;
+      //       }
+      //   }
+      //   if(countOf==5) return 1;
+      //   else return 0;
+      if(bears[5].ry==350) return 1;
+      else return 0;
+      }
+  
+      function moveDown(shiftCount){
+        if(shiftCount==1){
+        for(let i=0;i<5;i++)     bears[i].ly += 1;
+        for(let i=5;i<10;i++)    bears[i].ry += 1;
+        }
+        for(let i=0;i<2;i++)     bears[i].ly += 1;
+        for(let i=2;i<4;i++)    bears[i].ry += 1;
+  
+  
+      }
+      function moveLeft(shiftCount)
+      {
+          if(shiftCount==1){
+        for(let i=0;i<5;i++)
+           {  
+               if(bears[i].ly==350)
+              { 
+                  bears[i].lx -= 0.5; 
+                  bears[i+5].rx +=0.5;
+              }
+              else
+              {
+                  bears[i].ly += 1; 
+                  bears[i+5].ry +=1;
+              }
+          }
+        }
+        else{
+            for(let i=0;i<4;i++)
+           {  
+               if(bears[i].ly==350)
+              { 
+                  bears[i].lx -= 0.5; 
+                  bears[i+2].rx +=0.5;
+              }
+              else
+              {
+                  bears[i].ly += 1; 
+                  bears[i+2].ry +=1;
+              }
+          }
+        }
+          
+      }
+      function exitBears(){}
+      // function moveRight(bears){
+      //   for(let i=5;i<10;i++)
+      //      bears[i].rx += 0.5;
+      // }
+  
+      function stopInterval(bears){
+        reachDeskY+=1;
         
-    }
-  window.requestAnimationFrame(gameLoop);   // Needed to keep looping
-}
+      }
+      function shift2(){
+          bears=bearsShift2;
+          shiftExitCount+=1;
 
-</script>
+      }
+  
+  
+     function gameLoop(){ 
+      ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
+      drawFooter();
+      //drawMainBear();
+      if(shiftExitCount==0)
+      drawImageBears(1);
+      else
+        drawImageBears(2);
+        
+      if(checkEndLefty(bears)!=1 && checkEndRighty(bears)!=1 ){ // Brick stops when it gets to the right border 
+        moveDown(shiftExitCount);
+       }
+      else
+      {
+        if(reachDeskY<500 )
+            stopInterval(bears);
+        else if(reachDeskY==500)
+        {
+            moveLeft(shiftExitCount);
+            //if(bears[-1].ly>500)  { bears=bearsShift2;  shiftExitCount+=1;}
+        }
+              
+              //moveRight(bears);
+        //if(bears[-1].ly>500)  { bears=bearsShift2;  shiftExitCount+=1;}
+      }
+      //drawMainBear();
+      if (countOf<100)
+      {
+          //if(x<416 && y<10){
+          x+=1;
+          y+=1;
+          movePic(x,y);
+          
+          
+      }
+      else if(countOf<169){
+        
+          
+          x+=1;
+          movePic(x,y)
+          
+
+      }
+      else if (countOf<343){
+        //console.log(x,y);
+          x=x-2;
+          movePic(x,y);
+      }
+      else if(countOf<500)
+      {
+          x+=1;y+=1;
+          movePic(x,y);
+      }
+    //   else if(x==228 && y==307) shift2();
+      //shiftExitCount[0]=1;
+      else if(countOf<700){
+          x+=0.8;
+          movePic(x,y);
+      }
+      else
+      {
+         // if(countOf==500) shift2();
+          movePic(x,y);
+         // console.log(x,y);
+      }
+      countOf+=1;
+      console.log(countOf);
+   //   if(bears) { bears=bearsShift2;  shiftExitCount+=1;}
+    window.requestAnimationFrame(gameLoop);   // Needed to keep looping
+  }
+  
+  </script>
+    
 </body>
 </html>
