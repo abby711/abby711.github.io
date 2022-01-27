@@ -1,22 +1,50 @@
 <html>
     <head>
         <style>
-    * 
-    { padding: 0; margin: 0; } canvas { background: salmon; display: block; margin: 0 auto; }
+    * { padding: 0; margin: 0; } 
+    canvas { background: salmon; display: block; margin: 0 auto; }
       </style>
-    
-   
-    </head>
-    <body>
-        <input id="btn" type="button" value="start" />
+  </head>
+  <body>
+    <input id="btn" type="button" value="start" />
     <p>
     <canvas id="root" width="500" height="500" ></canvas>
     <script>
-        function moveLeft(bears){
-            for(let i=0;i<3;i++){
+        
+      const canvas = document.getElementById('root'),
+      btn = document.getElementById('btn'),
+      ctx = canvas.getContext('2d'),
+      brickImage = new Image(1,1);
+      var endy=350;
+      var reachDeskY=0;
+      drawFooter();
+      // var rectangle = new Path2D();
+        // var circle = new Path2D();
+      brickImage.src = "ball.png";
 
-            }
+      var piece = {
+         image: brickImage,
+          lx: 64,
+          ly: 10,
+          rx: 416,
+          ry: 10,
+          //width: 70
+        };
+     bears=[];
+     for(let i=0;i<10;i++){
+         bears[i]=piece;
+     }
+     btn.addEventListener('click', start); // When btn is clicked execute start()
+
+     function start()
+     {
+        if(btn.value === 'start')
+        {
+        btn.value = 'animation started';  
+        brickImage.onload = window.requestAnimationFrame(gameLoop); // Start gameLoop()
         }
+    }
+
     function drawFooter(){
         var ctx = canvas.getContext("2d");
         // var rectangle = new Path2D();
@@ -44,55 +72,86 @@
         ctx.fill();
         ctx.closePath();
     }
-      const canvas = document.getElementById('root'),
-      btn = document.getElementById('btn'),
-      ctx = canvas.getContext('2d'),
-      brickImage = new Image(1,1);
-      drawFooter();
-      // var rectangle = new Path2D();
-        // var circle = new Path2D();
-      brickImage.src = "ball.png";
 
-      var piece = {
-         image: brickImage,
-          x: 64,
-          y: 10,
-          //width: 70
-        };
-     bears=[];
-     for(let i=0;i<3;i++){
-         bears[i]=piece;
-     }
-     btn.addEventListener('click', start); // When btn is clicked execute start()
+    function drawImageBears(bears){
+      var dy=0;
+      for(let i=0;i<5;i++){
+        ctx.drawImage(bears[i].image, bears[i].lx, bears[i].ly-dy);
+        dy=dy+28;
+      }
+      dy=0;
+      for(let i=5;i<10;i++){
+        ctx.drawImage(bears[i].image, bears[i].rx, bears[i].ry-dy);
+        dy=dy+28;
+      }
+    }
 
-     function start()
-     {
-        if(btn.value === 'start')
-        {
-        btn.value = 'animation started';  
-        brickImage.onload = window.requestAnimationFrame(gameLoop); // Start gameLoop()
-        }
+    function checkEndLefty(bears){
+      var countOf=0;
+      var step=0;
+      for(let i=0;i<5;i++){
+        if(bears[i].ly != endy-step)
+          { countOf=countOf+1; 
+           step=step+10;
+          }
+      }
+      if(countOf==5) return 1;
+      else return 0;
+    }
+    function checkEndRighty(bears){
+      var countOf=0;
+      var step=0;
+      for(let i=5;i<10;i++){
+        if(bears[i].ry != endy-step)
+          { countOf=countOf+1; 
+           step=step+10;
+          }
+      }
+      if(countOf==5) return 1;
+      else return 0;
+    }
+
+    function moveDown(bears){
+      for(let i=0;i<5;i++)     bears[i].ly += 1;
+      for(let i=5;i<10;i++)    bears[i].ry += 1;
+
+
+    }
+    function moveLeft(bears){
+      for(let i=0;i<5;i++)
+         {bears[i].lx -= 0.5; bears[i+5].rx+=0.5;}
+        
+    }
+    // function moveRight(bears){
+    //   for(let i=5;i<10;i++)
+    //      bears[i].rx += 0.5;
+    // }
+
+    function stopInterval(bears){
+      reachDeskY+=1;
+      
     }
 
    function gameLoop(){ 
     ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
     drawFooter();
-    ctx.drawImage(bears[0].image, bears[0].x, bears[0].y);     // Draw at coordinates x and y
-    ctx.drawImage(bears[1].image, bears[1].x, bears[0].y-30);     
-    ctx.drawImage(bears[2].image, bears[2].x, bears[0].y-60);     
+    drawImageBears(bears);
+    // Draw at coordinates x and y
+         
     //pieceRightSide = piece.x + piece.width;
     //piece.y += 1
-    if(bears[0].y != 350 && bears[1].y!=340 && bears[2].y!=330 ){ // Brick stops when it gets to the right border 
-      bears[0].y += 1;
-      bears[1].y += 1;
-      bears[2].y += 1;
-    //   moveLeft(bears);
-    //   moveRight();
+    if(checkEndLefty(bears)==1 && checkEndRighty(bears)==1 ){ // Brick stops when it gets to the right border 
+      moveDown(bears);
+     
+    
     }
     else{
-        bears[0].x -= 1;
-      bears[1].x -= 1;
-      bears[2].x -= 1;
+      if(reachDeskY<100)
+          stopInterval(bears);
+      else if(reachDeskY==100)
+            moveLeft(bears);
+            //moveRight(bears);
+        
     }
   window.requestAnimationFrame(gameLoop);   // Needed to keep looping
 }
