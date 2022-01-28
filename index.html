@@ -6,10 +6,13 @@
       </style>
   </head>
   <body>
-      &nbsp;&nbsp;&nbsp;&nbsp;
-    <input id="btn" type="button" value="start"/>
-    <p>
-    <canvas id="root" width="500" height="500" ></canvas>
+    <br>
+    <b><marquee> Click the button start to view animation</marquee></b>
+    <br><br>
+    <canvas id="root" ></canvas>
+    <br>
+    <center>
+    <input id="btn" type="button" value="start"/></center>
 
 
     <script>
@@ -23,8 +26,16 @@
         var startPlay=0;
         var mainBearPos=0;
         var shiftExitCount=0;
-        
-        drawFooter();
+        var shiftIncharge=0;
+        var ilx=70;
+        var ily=450;
+        var irx=430;
+        var iry=450;
+        canvas.width = 500;
+        canvas.height = 500;
+        var background = new Image();
+        background.src = "resizefooter.png";
+        drawFooter(ilx,ily,irx,iry);
         // var rectangle = new Path2D();
           // var circle = new Path2D();
         brickImage.src = "ball.png";
@@ -60,11 +71,8 @@
            bearsShift2[i]=piece;
        }
 
-       
-       for(let i=0;i<4;i++)
-         bearsShift2[i]=piece;
        btn.addEventListener('click', start); // When btn is clicked execute start()
-       document.getElementById("myCanvas").addEventListener("click");
+      // document.getElementById("myCanvas").addEventListener("click");
   
        function start()
        {
@@ -87,32 +95,36 @@
   
       }
   
-      function drawFooter(){
-          var ctx = canvas.getContext("2d");
+      function drawFooter(lx,ly,rx,ry){
+          // var ctx = canvas.getContext("2d");
+          // ctx.beginPath();
+          // ctx.moveTo(0,400);
+          // ctx.lineTo(50,400);
+          // ctx.lineTo(50,410);
+          // ctx.lineTo(0,410);
+          // ctx.fillStyle='black';
+          // ctx.fillRect(50,395,40,20);
+          // ctx.moveTo(90,400);
+          // ctx.lineTo(410,400);
+          // ctx.lineTo(410,410);
+          // ctx.lineTo(90,410);
+          // ctx.fillRect(410,395,40,20);
+          // ctx.moveTo(500,400);
+          // ctx.lineTo(450,400);
+          // ctx.moveTo(500,410);
+          // ctx.lineTo(450,410);
+          // ctx.stroke();
+           
+          ctx.drawImage(background,0,0);
           ctx.beginPath();
-          ctx.moveTo(0,400);
-          ctx.lineTo(50,400);
-          ctx.lineTo(50,410);
-          ctx.lineTo(0,410);
-          ctx.fillStyle='black';
-          ctx.fillRect(50,395,40,20);
-          ctx.moveTo(90,400);
-          ctx.lineTo(410,400);
-          ctx.lineTo(410,410);
-          ctx.lineTo(90,410);
-          ctx.fillRect(410,395,40,20);
-          ctx.moveTo(500,400);
-          ctx.lineTo(450,400);
-          ctx.moveTo(500,410);
-          ctx.lineTo(450,410);
-          ctx.stroke();
-          ctx.beginPath();
-          ctx.arc(70, 450, 10, 0, Math.PI*2);
-          ctx.arc(430, 450, 10, 0, Math.PI*2);
-          ctx.fill();
-          ctx.closePath();
+           ctx.arc(lx, ly, 10, 0, Math.PI*2);
+           ctx.arc(rx, ry, 10, 0, Math.PI*2);
+           ctx.fill();
+           ctx.closePath();
       }
-  
+      function moveRightIncharge(ix,iy){
+        ctx.arc(ix, iy, 10, 0, Math.PI*2);
+      }
       function drawImageBears(temp){
           if(temp==1){
         var dy=0;
@@ -127,11 +139,12 @@
         }
       }
       else{
-          dy=0;
-          for(let i=0;i<4;i++)
+          //bears=bearsShift2;
+          var dy=0;
+          for(let i=0;i<2;i++)
          { 
              ctx.drawImage(bears[i].image, bears[i].lx, bears[i].ly-dy);
-             ctx.drawImage(bears[i+2].image, bears[i+5].rx, bears[i+2].ry-dy);
+             ctx.drawImage(bears[i+2].image, bears[i+2].rx, bears[i+2].ry-dy);
              dy=dy+38;
          }
   
@@ -139,7 +152,7 @@
   
       }
   
-      function checkEndLefty(bears){
+      function checkEndLefty(bears,shiftNo){
       //   var countOf=0;
       //   var step=0;
       //   for(let i=0;i<5;i++){
@@ -150,10 +163,16 @@
       //   }
       //   if(countOf==5) return 1;
       //   else return 0;
+      if(shiftNo==0){
       if(bears[0].ly==350) return 1;
       else return 0;
       }
-      function checkEndRighty(bears){
+      else{
+        if(bears[0].ly==350) return 1;
+      else return 0;
+      }
+      }
+      function checkEndRighty(bears,shiftNo){
       //   var countOf=0;
       //   var step=0;
       //   for(let i=5;i<10;i++){
@@ -164,9 +183,16 @@
       //   }
       //   if(countOf==5) return 1;
       //   else return 0;
+      if(shiftNo==0){
       if(bears[5].ry==350) return 1;
       else return 0;
       }
+      else{
+        if(bears[2].ry==350) return 1;
+      else return 0;
+      }
+    }
+      
   
       function moveDown(shiftCount){
         if(shiftCount==1){
@@ -180,7 +206,7 @@
       }
       function moveLeft(shiftCount)
       {
-          if(shiftCount==1){
+          if(shiftCount==0){
         for(let i=0;i<5;i++)
            {  
                if(bears[i].ly==350)
@@ -225,35 +251,67 @@
       function shift2(){
           bears=bearsShift2;
           shiftExitCount+=1;
+          reachDeskY=0;
 
       }
   
   
      function gameLoop(){ 
       ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
-      drawFooter();
+      drawFooter(ilx,ily,irx,iry);
       //drawMainBear();
       if(shiftExitCount==0)
-      drawImageBears(1);
-      else
-        drawImageBears(2);
-        
-      if(checkEndLefty(bears)!=1 && checkEndRighty(bears)!=1 ){ // Brick stops when it gets to the right border 
-        moveDown(shiftExitCount);
-       }
-      else
       {
-        if(reachDeskY<500 )
+        drawImageBears(1);
+        if(checkEndLefty(bears,shiftExitCount)!=1 && checkEndRighty(bears,shiftExitCount)!=1 )
+        moveDown(shiftExitCount);
+        else{
+          if(reachDeskY<500 )
             stopInterval(bears);
         else if(reachDeskY==500)
         {
-            moveLeft(shiftExitCount);
+            moveLeft(0);
             //if(bears[-1].ly>500)  { bears=bearsShift2;  shiftExitCount+=1;}
         }
-              
-              //moveRight(bears);
-        //if(bears[-1].ly>500)  { bears=bearsShift2;  shiftExitCount+=1;}
+        }
       }
+      else
+      {
+        drawImageBears(2);
+      if(checkEndLefty(bears,1)!=1 && checkEndRighty(bears,1)!=1 ) // Brick stops when it gets to the right border 
+        moveDown(1);
+      else{
+        if(reachDeskY<100 )
+            stopInterval(bears);
+        else if(reachDeskY==100)
+        {
+            moveLeft(1);
+            //if(bears[-1].ly>500)  { bears=bearsShift2;  shiftExitCount+=1;}
+        }
+      }
+      }
+
+      // if(shiftExitCount==0)
+      // drawImageBears(1);
+      // else
+      //   drawImageBears(2);
+        
+      // if(checkEndLefty(bears,shiftExitCount)!=1 && checkEndRighty(bears,shiftExitCount)!=1 ){ // Brick stops when it gets to the right border 
+      //   moveDown(shiftExitCount);
+      //  }
+      // else
+      // {
+      //   if(reachDeskY<500 )
+      //       stopInterval(bears);
+      //   else if(reachDeskY==500)
+      //   {
+      //       moveLeft(shiftExitCount);
+      //       //if(bears[-1].ly>500)  { bears=bearsShift2;  shiftExitCount+=1;}
+      //   }
+              
+      //         //moveRight(bears);
+      //   //if(bears[-1].ly>500)  { bears=bearsShift2;  shiftExitCount+=1;}
+      // }
       //drawMainBear();
       if (countOf<100)
       {
@@ -261,7 +319,6 @@
           x+=1;
           y+=1;
           movePic(x,y);
-          
           
       }
       else if(countOf<169){
@@ -284,18 +341,64 @@
       }
     //   else if(x==228 && y==307) shift2();
       //shiftExitCount[0]=1;
-      else if(countOf<700){
+      else if(countOf<718){
+
+        //if(countOf==500) {shiftExitCount+=1; bears=bearsShift2; reachDeskY=0;}
           x+=0.8;
           movePic(x,y);
       }
-      else
+      else if(countOf<949)
       {
          // if(countOf==500) shift2();
+
           movePic(x,y);
-         // console.log(x,y);
+          if(irx!=250)
+            irx-=2;
+          else
+            iry-=3.5;
+         // moveRightIncharge();
+          console.log(x,y);
       }
+      else if(countOf<1133){
+        x=x-1.8;
+        movePic(x,y);
+        iry=0;
+        irx=250;
+      }
+      else if(countOf<1344){
+
+        movePic(x,y);
+        if(iry<=450)
+          iry+=3.5;
+        else
+          irx+=2.2;
+      }
+      else if(countOf<1655){
+        movePic(x,y);
+        if(ilx!=250)
+            ilx+=2;
+          else
+            ily-=3.5;
+
+      }
+      // else if(countOf<1686){
+      //     movePic(x,y);
+      //     if(irx!=250)
+      //       irx-=2;
+      //     else
+      //       iry-=3.5;
+
+      // }
+      else{
+          movePic(x,y);
+          if(irx>=250)
+            irx-=2;
+          else
+            iry-=3.5;
+
+        }
       countOf+=1;
-      console.log(countOf);
+      //console.log(countOf);
    //   if(bears) { bears=bearsShift2;  shiftExitCount+=1;}
     window.requestAnimationFrame(gameLoop);   // Needed to keep looping
   }
