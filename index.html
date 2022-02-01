@@ -1,0 +1,547 @@
+<html>
+    <head>
+       <style>
+    * { padding: 0; margin: 0; } 
+    canvas { background: salmon; display: block; margin: 0 auto; }
+      </style>
+  </head>
+  <body>
+    <br>
+    <b><marquee> Click the button start to view animation</marquee></b>
+    <br><br>
+    <canvas id="root" ></canvas>
+    <br>
+    <center>
+    <input id="btn" type="button" value="start"/></center>
+
+
+    <script>
+        
+        const canvas = document.getElementById('root'),
+        btn = document.getElementById('btn'),
+        ctx = canvas.getContext('2d'),
+        brickImage = new Image(1,1);
+        var endy=350;
+        var reachDeskY=0;
+        var startPlay=0;
+        var mainBearPos=0;
+        var shiftExitCount=0;
+        var shiftIncharge=0;
+        var ilx=70;
+        var ily=450;
+        var irx=430;
+        var iry=450;
+        canvas.width = 500;
+        canvas.height = 500;
+        var background = new Image();
+        background.src = "resizefooter.png";
+        drawFooter(ilx,ily,irx,iry);
+        // var rectangle = new Path2D();
+          // var circle = new Path2D();
+        brickImage.src = "ball.png";
+        var countOf=0;
+  
+        var piece1 = {
+            image: brickImage,
+            lx: 62,
+            ly: 10,
+            rx: 416,
+            ry: 10,
+          };
+          var piece2 = {
+            image: brickImage,
+            lx: 62,
+            ly: -55,
+            rx: 416,
+            ry: 10,
+          };
+          var piece3 = {
+            image: brickImage,
+            lx: 62,
+            ly: -120,
+            rx: 416,
+            ry: 10,
+          };
+          var piece4= {
+            image: brickImage,
+            lx: 62,
+            ly: -185,
+            rx: 416,
+            ry: 10,
+          };
+          var piece5 = {
+            image: brickImage,
+            lx: 62,
+            ly: -250,
+            rx: 416,
+            ry: 10,
+          };
+          var piece6 = {
+            image: brickImage,
+            lx: 64,
+            ly: 10,
+            rx: 416,
+            ry: 10,
+          };
+          var piece7 = {
+            image: brickImage,
+            lx: 64,
+            ly: 10,
+            rx: 416,
+            ry: -55,
+          };
+          var piece8 = {
+            image: brickImage,
+            lx: 64,
+            ly: 10,
+            rx: 416,
+            ry: -120,
+          };
+          var piece9 = {
+            image: brickImage,
+            lx: 64,
+            ly: 10,
+            rx: 416,
+            ry: -185,
+          };
+          var piece10 = {
+            image: brickImage,
+            lx: 64,
+            ly: 10,
+            rx: 416,
+            ry: -250,
+          };
+          
+          
+          // function piece (color, x1, y1,x2,y2) {
+          //   image= color,
+          //   lx=x1;
+          //       ly=y1;
+          //       rx=x2;
+          //       ry=y2;
+          //   //width: 70
+          // }
+          // var B = {
+          //     create: function (color, x1, y1,x2,y2) {
+          //       image: color;
+          //       lx=x1;
+          //       ly=y1;
+          //       rx=x2;
+          //       ry=y2;
+
+          //     }
+          //   };
+
+          var redBear = {
+            image: brickImage,
+            x:350, y:10,
+          };
+      
+       var train=new Image();
+       train.onload=function(){
+        ctx.drawImage(train,248,20);
+    }
+      train.src="ball.png";
+      var x=250;
+      var y=50;
+       mainBear=redBear;
+       bears=[];
+        bearsShift2=[];
+        x1Max=64;
+        x2Max=416;
+        y1Max=10;
+        y2Max=10;
+        dy=0;
+        bears[0]=piece1;
+        bears[1]=piece2;
+        bears[2]=piece3;
+        bears[3]=piece4;
+        bears[4]=piece5;
+        bears[5]=piece6;
+        bears[6]=piece7;
+        bears[7]=piece8;
+        bears[8]=piece9;
+        bears[9]=piece10;
+        // for(let i=0;i<10;i++) 
+        //    bears[i]=piece;
+        // for(let i=0;i<5;i++)
+        //   {
+        //     //bears[i]=piece;
+        //     //bears[i]=B.create(brickImage,x1Max,y1Max-dy,x2Max,y2Max);
+        //     bears[i].ly-=dy;
+        //     bears[i+5].ry-=dy;
+        //     console.log(i,bears[i])
+        //     console.log(i+5,bears[i+5])
+        //     dy+=38;
+        //   }
+          console.log("later",bears);
+          //  dy=0;
+          //  for(let i=5;i<10;i++)
+          // {
+          //   //bears[i]=piece;
+          //   //bears[i]=B.create(brickImage,x1Max,y1Max,x2Max,y2Max-dy);
+          //   bears[i].ry-=dy;
+          //    dy+=38;
+          //  }
+
+       
+       
+       //console.log(bears);
+       
+      //  for(let i=0;i<4;i++){
+      //      bearsShift2[i]=piece;
+      //  }
+
+       btn.addEventListener('click', start); 
+  
+       function start()
+       {
+          if(btn.value === 'start')
+          {
+          btn.value = 'animation started';  
+          brickImage.onload = window.requestAnimationFrame(gameLoop); // Start gameLoop()
+          }
+      }
+      function movePic(x,y)
+      {
+        ctx.drawImage(train,x,y);
+      }
+      function drawMainBear(){
+          var positions=[
+              [150,10],[150,10],[150,20],[150,30],[150,10],[150,10],[150,10],[150,20],[150,30],[150,10]
+          ];
+          ctx.drawImage(redBear.image,positions[ 1][0], positions[ 1][1]);
+          mainBearPos+=1;
+  
+      }
+  
+      function drawFooter(lx,ly,rx,ry){
+          
+          ctx.drawImage(background,0,0);
+          ctx.beginPath();
+           ctx.arc(lx, ly, 10, 0, Math.PI*2);
+           ctx.arc(rx, ry, 10, 0, Math.PI*2);
+           ctx.fill();
+           ctx.closePath();
+      }
+      function moveRightIncharge(ix,iy){
+        ctx.arc(ix, iy, 10, 0, Math.PI*2);
+      }
+
+      function drawImageBears(format){
+          
+        
+        var dy=0;
+        for(let i=0;i<5;i++){
+          ctx.drawImage(bears[i].image, bears[i].lx, bears[i].ly);
+          //console.log(bears[i].lx,bears[i].ly);
+
+          //dy=dy+30;
+        }
+        dy=0;
+        for(let i=5;i<10;i++){
+          ctx.drawImage(bears[i].image, bears[i].rx, bears[i].ry);
+          //console.log(bears[i].rx,bears[i].ry);
+          //dy=dy+38;
+        }
+             }
+            //  ctx.drawImage(bears[0].image, bears[0].lx, bears[0].ly-dy);
+            //  ctx.drawImage(bears[5].image, bears[5].rx, bears[5].ry-dy);
+            //  dy+=38;
+            //  ctx.drawImage(bears[1].image, bears[1].lx, bears[0].ly-dy);
+            //  ctx.drawImage(bears[6].image, bears[6].rx, bears[6].ry-dy);
+
+          
+      
+  
+      var t=1;
+  
+      function checkEndLefty(){
+      
+      
+      if(bears[0].ly==350) return 1;
+      else return 0;
+      
+      }
+      function checkEndRighty(){
+      
+      
+      if(bears[5].ry==350) return 1;
+      else return 0;
+      
+    }
+      
+  
+      function moveDown(){
+        
+        for(let i=0;i<5;i++)     bears[i].ly += 1;
+        for(let i=5;i<10;i++)    bears[i].ry += 1;
+        
+  
+  
+      }
+      function moveLeft()
+      {
+          //if(shiftCount==0){
+        for(let i=0;i<5;i++)
+           {  
+               if(bears[i].ly==350)
+              { 
+                  bears[i].lx -= 0.5; 
+                  bears[i+5].rx +=0.5;
+              }
+              else
+              {
+                  bears[i].ly += 1; 
+                  bears[i+5].ry +=1;
+              }
+          //}
+        }
+        
+          
+      }
+      function exitBears(){}
+      // function moveRight(bears){
+      //   for(let i=5;i<10;i++)
+      //      bears[i].rx += 0.5;
+      // }
+  
+      function stopInterval(){
+        reachDeskY+=1;
+        
+      }
+      function shift2(){
+          bears=bearsShift2;
+          shiftExitCount+=1;
+          reachDeskY=0;
+
+      }
+  
+     var temp=0;
+     function gameLoop(){ 
+      // console.log(bears[0].rx);
+      ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
+      drawFooter(ilx,ily,irx,iry);
+      drawImageBears(t);
+      t+=1;
+        if(checkEndLefty()!=1 && checkEndRighty()!=1 )
+           moveDown();
+        else
+        {
+          if(reachDeskY<500)
+            stopInterval();
+        else if(reachDeskY==500)
+         {
+             //console.log(bears[0].lx);
+             //console.log(bears[5].rx);
+             reachDeskY+=1;
+             
+            }
+         else if(reachDeskY==501)
+
+         {  moveLeft();
+                  // for(let i=0;i<5;i+=2)
+                  // {
+                  //   if(bears[i].lx==64) {
+                  //     bears[i].lx -=1; 
+                  //      }
+                  //   else bears[i].ly+=1;
+                  // }  
+                  
+                  // for(let i=5;i<10;i++)
+                  // {
+                  //   if(bears[i].rx==416) bears[0].rx +=1;
+                  //   else bears[i].ry+=1;
+                  // }  
+
+                    //bears[0].lx -= 2;
+                    //bears[1].ly+=1;
+                    
+                    //bears[1].ly+=1;
+                    //bears[5].rx += 0.5;
+                  
+                  //console.log(bears);
+            //   for(let i=0;i<5;i++)
+            //   {
+            //         bears[i].lx -= 0.5;
+            //         bears[i+5].rx += 0.5;
+            //   }
+            //   for(let i=temp;i<5;i++)
+            //   {
+            //          bears[i].ly +=1;
+            //          bears[i+5].ry += 1;
+            //   }
+            //   console.log(temp);
+              
+
+
+        //     for(let i=0;i<5;i++){
+        //         if(bears[i].ly>=350) 
+        //         {
+        //             bears[i].lx -= 0.5;
+        //             bears[i+5].rx += 0.5;
+        //         }
+        //         else {
+        //             bears[i].ly+=1;
+        //             bears[i+5].ry += 1;
+        //         }
+
+                
+
+        //     }
+        }
+        }
+      
+      if(countOf <235){
+        movePic(x,y);
+      }
+      else if (countOf<400)
+      {
+          //if(x<416 && y<10){
+          x+=1;
+          
+          movePic(x,y);
+          
+      }
+      else if(countOf<450) movePic(x,y);
+      else if(countOf<800){
+        x=x-1;
+        movePic(x,y);
+      }
+      else if(countOf<820) movePic(x,y);
+      else if(countOf<920){
+        x+=1.5;
+        y+=1.5;
+        movePic(x,y);
+      }
+      else if(countOf<1117){
+        x+=1;
+        movePic(x,y);
+      }
+      else if(countOf<1270){
+        y+=1;
+        movePic(x,y);
+      }
+      else if(countOf<1500){
+        movePic(x,y);
+        if(irx!=250)
+            irx-=2;
+          else
+            iry-=3.5;
+      }
+      else if(countOf<1850){
+        x-=1;
+        movePic(x,y);
+      }
+      else if(countOf<2100){
+        movePic(x,y);
+        if(ilx!=250)
+             ilx+=2;
+           else
+             ily-=3.5;
+      }
+    //   else if(countOf<169){
+        
+          
+    //       x+=1;
+    //       movePic(x,y)
+          
+
+    //   }
+    //   else if (countOf<343){
+    //     //console.log(x,y);
+    //       x=x-2;
+    //       movePic(x,y);
+    //   }
+    //   else if(countOf<500)
+    //   {
+    //       x+=1;y+=1;
+    //       movePic(x,y);
+    //   }
+    // //   else if(x==228 && y==307) shift2();
+    //   //shiftExitCount[0]=1;
+    //   else if(countOf<718){
+
+    //     //if(countOf==500) {shiftExitCount+=1; bears=bearsShift2; reachDeskY=0;}
+    //       x+=0.8;
+    //       movePic(x,y);
+    //   }
+    //   else if(countOf<949)
+    //   {
+    //      // if(countOf==500) shift2();
+
+    //       movePic(x,y);
+    //       if(irx!=250)
+    //         irx-=2;
+    //       else
+    //         iry-=3.5;
+    //      // moveRightIncharge();
+    //       //console.log(x,y);
+    //   }
+    //   else if(countOf<1133){
+    //     x=x-1.8;
+    //     movePic(x,y);
+    //     iry=0;
+    //     irx=250;
+    //   }
+    //   else if(countOf<1344){
+
+    //     movePic(x,y);
+    //     if(iry<=450)
+    //       iry+=3.5;
+    //     else
+    //       irx+=2.2;
+    //   }
+    //   else if(countOf<1655){
+    //     movePic(x,y);
+    //     if(ilx!=250)
+    //         ilx+=2;
+    //       else
+    //         ily-=3.5;
+
+    //   }
+    //   // else if(countOf<1686){
+    //   //     movePic(x,y);
+    //   //     if(irx!=250)
+    //   //       irx-=2;
+    //   //     else
+    //   //       iry-=3.5;
+
+    //   // }
+    //   else if(countOf<1900){
+    //       movePic(x,y);
+    //       if(irx>=250)
+    //         irx-=2;
+    //       else
+    //         iry-=3.5;
+
+    //     }
+    //     else if(countOf==1900) {
+    //       console.log(countOf)
+    //       reachDeskY=0;
+    //       for(let i=0;i<10;i++){
+    //         bears[i].lx=64;
+    //         bears[i].ly=10;
+    //         bears[i].rx=416;
+    //         bears[i].ry=10;
+    //         temp=0;
+    //       }
+    //       //console.log(bears);
+    //     }
+
+
+        else{
+         movePic(x,y);
+          
+
+         }
+      countOf+=1;
+      //console.log(countOf);
+   //   if(bears) { bears=bearsShift2;  shiftExitCount+=1;}
+    window.requestAnimationFrame(gameLoop);   // Needed to keep looping
+  }
+  
+  </script>
+    
+</body>
+</html>
