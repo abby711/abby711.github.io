@@ -1,6 +1,6 @@
 https://abby711.github.io/canvas/
 
-<h2> Various Animation Functions in the play</h2>
+<h2> The Various Animation Functions used to depict the story</h2>
 <ol>
   <li>movePic  -function to move the main player</li>
   <li>drawFooter --function to depict the movements of right and left incharge</li>
