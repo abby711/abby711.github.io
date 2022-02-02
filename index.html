@@ -1,0 +1,375 @@
+<html>
+    <head>
+       <style>
+    * { padding: 0; margin: 0; } 
+    canvas { background: salmon; display: block; margin: 0 auto; }
+      </style>
+  </head>
+  <body>
+    <br>
+    <b><marquee> Click the button start to view animation</marquee></b>
+    <br><br>
+    <canvas id="root" ></canvas>
+    <br>
+    <center>
+    <input id="btn" type="button" value="start"/>
+    <br> <br>
+    <p id="timer"></p>
+    </center>
+
+
+    <script>
+        
+        const canvas = document.getElementById('root'),
+        btn = document.getElementById('btn'),
+        ctx = canvas.getContext('2d'),
+        brickImage = new Image(1,1);
+        canvas.width = 500;
+        canvas.height = 500;
+        deskPoint=350;
+        var reachDeskY=0;
+        // co=ordinates of keft and right incharges
+        var ilx=70;
+        var ily=450;
+        var irx=430;
+        var iry=450;
+
+        var background = new Image();
+        background.src = "resizefooter.png";
+        drawFooter(ilx,ily,irx,iry);
+        brickImage.src = "ball.png";
+        var countOf=0;
+  
+        var piece1 = {
+            image: brickImage,
+            lx: 62,
+            ly: 10,
+            rx: 416,
+            ry: 10,
+          };
+          var piece2 = {
+            image: brickImage,
+            lx: 62,
+            ly: -55,
+            rx: 416,
+            ry: 10,
+          };
+          var piece3 = {
+            image: brickImage,
+            lx: 62,
+            ly: -120,
+            rx: 416,
+            ry: 10,
+          };
+          var piece4= {
+            image: brickImage,
+            lx: 62,
+            ly: -185,
+            rx: 416,
+            ry: 10,
+          };
+          var piece5 = {
+            image: brickImage,
+            lx: 62,
+            ly: -250,
+            rx: 416,
+            ry: 10,
+          };
+          var piece6 = {
+            image: brickImage,
+            lx: 64,
+            ly: 10,
+            rx: 416,
+            ry: 10,
+          };
+          var piece7 = {
+            image: brickImage,
+            lx: 64,
+            ly: 10,
+            rx: 416,
+            ry: -55,
+          };
+          var piece8 = {
+            image: brickImage,
+            lx: 64,
+            ly: 10,
+            rx: 416,
+            ry: -120,
+          };
+          var piece9 = {
+            image: brickImage,
+            lx: 64,
+            ly: 10,
+            rx: 416,
+            ry: -185,
+          };
+          var piece10 = {
+            image: brickImage,
+            lx: 64,
+            ly: 10,
+            rx: 416,
+            ry: -250,
+          };
+          
+          
+          
+
+          var redBear = {
+            image: brickImage,
+            x:350, y:10,
+          };
+      
+       var train=new Image();
+       train.onload=function(){
+        ctx.drawImage(train,248,20);
+    }
+      train.src="ball.png";
+      var x=250;
+      var y=50;
+       mainBear=redBear;
+       bears=[];
+      
+        bears[0]=piece1;
+        bears[1]=piece2;
+        bears[2]=piece3;
+        bears[3]=piece4;
+        bears[4]=piece5;
+        bears[5]=piece6;
+        bears[6]=piece7;
+        bears[7]=piece8;
+        bears[8]=piece9;
+        bears[9]=piece10;
+/*------------------------------------------------------------------  ANIMATION FUNCTIONS ----------------------------------------------------------------------- */
+      function movePic(x,y)    //function to move the main player
+      {
+        ctx.drawImage(train,x,y);
+      }
+      
+      function drawFooter(lx,ly,rx,ry){    // function to depict the movements of right and left incharge
+          
+          ctx.drawImage(background,0,0);
+          ctx.beginPath();
+          ctx.arc(lx, ly, 10, 0, Math.PI*2);
+          ctx.arc(rx, ry, 10, 0, Math.PI*2);
+          ctx.fill();
+          ctx.closePath();
+      }
+
+      
+
+      function drawImageBears(){     //function to daw the players in queue
+        for(let i=0;i<5;i++)
+          ctx.drawImage(bears[i].image, bears[i].lx, bears[i].ly);
+         
+        for(let i=5;i<10;i++)
+          ctx.drawImage(bears[i].image, bears[i].rx, bears[i].ry);
+        }
+            
+      function checkEndLefty(){    //function to check if left queue has reached the desk of incharge
+        if(bears[0].ly==deskPoint) return 1;
+        else return 0;
+      
+      }
+      function checkEndRighty(){    //function to check if right queue has reached the desk of incharge
+      if(bears[5].ry==deskPoint) return 1;
+      else return 0;
+      }
+      function moveDown(){         //function to make the players reach respective desks 
+        
+        for(let i=0;i<5;i++)     bears[i].ly += 1;
+        for(let i=5;i<10;i++)    bears[i].ry += 1;
+      }
+
+      function moveLeft()       //function that performs the exit task of players once they've reached the queue
+      {
+        for(let i=0;i<5;i++)
+           {  
+               if(bears[i].ly==350)
+              { 
+                  bears[i].lx -= 0.5; 
+                  bears[i+5].rx +=0.5;
+              }
+              else
+              {
+                  bears[i].ly += 1; 
+                  bears[i+5].ry +=1;
+              }
+          
+           }
+      }
+
+      function exitRightIncharge(){    //function to perform exit animation of right desk incharge
+        if(irx!=250)
+            irx-=2;
+          else
+            iry-=3.5;
+      }
+
+      function exitLeftIncharge(){    //function to perform exit animation of left desk incharge
+        if(ilx!=250)
+             ilx+=2;
+           else
+             ily-=3.5;
+      }
+
+      function reEntryRightIncharge(){    //function to implement re entry of Right Incharge
+        if(iry<=450)
+          iry+=3.5;
+        else
+          irx+=2.2;
+
+      }     
+      
+      function reEntryLeftIncharge(){   //function to implement re entry of Left Incharge
+        if(ily<=450)
+           ily+=3.5;
+        else
+           ilx-=2.2;
+
+      }
+  
+      function stopInterval(){     //to indroduce an interval (waiting time) for the players
+        reachDeskY+=1;
+      }
+
+      function setIncharge(){     
+         ilx=70;
+         irx=430;
+      }
+
+
+
+      /*----------------------------------------------------------------  END OF ANIMATION FUNCTIONS ---------------------------------------------------------------------- */
+
+      btn.addEventListener('click', start); 
+  
+       function start()         //function to begin animation process once when the start button is hit 
+       {
+          if(btn.value === 'start')
+          {
+          btn.value = 'animation started';  
+          startTime = new Date().getTime();   // to obtain the start of animation
+          brickImage.onload = window.requestAnimationFrame(gameLoop); // Start gameLoop()
+          }
+      }
+      
+    
+     function gameLoop(){        //function that calls the other aniimation functions based on time intervals
+      ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
+      drawFooter(ilx,ily,irx,iry);
+      drawImageBears();
+        if(checkEndLefty()!=1 && checkEndRighty()!=1 )
+           moveDown();
+        else
+        {
+          if(reachDeskY<500)
+            stopInterval();
+          else 
+            moveLeft();  
+        }
+      
+      if(countOf <235){
+        movePic(x,y);
+      }
+      else if (countOf<400)
+      {
+          x+=1;
+          movePic(x,y);
+          
+      }
+      else if(countOf<450) 
+          movePic(x,y);
+      else if(countOf<800){
+        x=x-1;
+        movePic(x,y);
+      }
+      else if(countOf<820) movePic(x,y);
+      else if(countOf<920){
+        x+=1.5;
+        y+=1.5;
+        movePic(x,y);
+      }
+      else if(countOf<1117){
+        x+=1;
+        movePic(x,y);
+      }
+      else if(countOf<1270){
+        y+=1;
+        movePic(x,y);
+      }
+      else if(countOf<1500){
+        movePic(x,y);
+        exitRightIncharge();
+      }
+      else if(countOf<1850){
+        x-=1;
+        movePic(x,y);
+        iry=-6;
+        irx=250;
+        
+      }
+      else if(countOf<2100){
+        movePic(x,y);
+        exitLeftIncharge();
+      }
+      else if(countOf<2315){    //reentry of right incharge
+        movePic(x,y);
+        reEntryRightIncharge();
+        ily=-6;
+        ilx=250;
+      }
+      else if(countOf==2315){
+        movePic(x,y);
+        dy=0;
+        for(let i=0;i<10;i++){
+            bears[i].lx=64;
+            bears[i].ly=10-dy;
+            bears[i].rx=416;
+            bears[i].ry=10-dy;
+            //dy+=45;
+          }
+          
+          reachDeskY=0;
+      }
+      else if(countOf<2526){   //reentry of left incharge
+        movePic(x,y);  
+        reEntryLeftIncharge();
+
+
+      }
+      
+      else if(countOf<3476){
+         x+=0.4;
+         movePic(x,y);
+         setIncharge();
+
+      }
+      else if(countOf<3710){
+        movePic(x,y);
+        exitRightIncharge();
+
+      }
+      else {
+        movePic(x,y);
+        exitLeftIncharge();
+      }
+
+
+      if(countOf==4000) {
+        var endTime = new Date().getTime();            //to obtain the end of animaion time
+        btn.value = 'animation over!!!'; 
+        var time=endTime-startTime; 
+        time=time/1000;
+        document.getElementById("timer").innerHTML="Time Taken "+time+" seconds";
+      }
+      
+    
+      countOf+=1;
+      
+    window.requestAnimationFrame(gameLoop);   // Needed to keep looping
+  }
+  
+  </script>
+    
+</body>
+</html>
